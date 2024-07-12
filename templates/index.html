@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #282c34;
+            color: #61dafb;
+        }
+
+        .stopwatch {
+            text-align: center;
+            background-color: #20232a;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #display {
+            font-size: 3rem;
+            margin: 20px 0;
+            color: #61dafb;
+        }
+
+        button {
+            padding: 15px 25px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            transition: background-color 0.2s ease;
+            margin: 5px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #startPause {
+            background-color: #28a745;  /* Green start button */
+            color: white;
+        }
+
+        #reset {
+            background-color: #dc3545;  /* Red reset button */
+            color: white;
+        }
+
+        #lap {
+            background-color: #ffc107;  /* Yellow lap button */
+            color: white;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 20px 0 0 0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        li {
+            background-color: #444;
+            color: #fff;
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stopwatch">
+        <p id="display">00:00:00.000</p>
+        <button id="startPause">Start</button>
+        <button id="reset">Reset</button>
+        <button id="lap">Lap</button>
+        <ul id="laps"></ul>
+    </div>
+    <script>
+        let timer;         // Variable to hold setInterval reference
+        let time = 0;      // Current elapsed time in milliseconds
+        let lapCounter = 1; // Lap counter
+
+        function startPause() {
+            if (!timer) {
+                timer = setInterval(runStopwatch, 10);
+                document.getElementById("startPause").textContent = "Pause";
+            } else {
+                clearInterval(timer);
+                timer = null;
+                document.getElementById("startPause").textContent = "Resume";
+            }
+        }
+
+        function reset() {
+            clearInterval(timer);
+            timer = null;
+            time = 0;
+            lapCounter = 1;
+            document.getElementById("display").textContent = formatTime(time);
+            document.getElementById("startPause").textContent = "Start";
+            document.getElementById("laps").innerHTML = ""; // Clear laps list
+        }
+
+        function lap() {
+            if (timer) {
+                const lapTime = time;
+                const lapItem = document.createElement("li");
+                lapItem.textContent = `Lap ${lapCounter}: ${formatTime(lapTime)}`;
+                document.getElementById("laps").appendChild(lapItem);
+                lapCounter++;
+            }
+        }
+
+        function runStopwatch() {
+            time += 10;
+            document.getElementById("display").textContent = formatTime(time);
+        }
+
+        function formatTime(milliseconds) {
+            const date = new Date(milliseconds);
+            return date.toISOString().substr(11, 11);
+        }
+
+        document.getElementById("startPause").addEventListener("click", startPause);
+        document.getElementById("reset").addEventListener("click", reset);
+        document.getElementById("lap").addEventListener("click", lap);
+    </script>
+</body>
+
+</html>
